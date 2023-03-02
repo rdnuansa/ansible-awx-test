@@ -1,0 +1,4 @@
+- name: Testing
+  host: all
+  roles: 
+    - roles/loadbalancer
