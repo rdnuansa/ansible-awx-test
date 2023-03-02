@@ -1,4 +1,4 @@
 - name: Testing
-  host: all
+  hosts: all
   roles: 
-    - roles/loadbalancer
+    - roles/load-balancer
