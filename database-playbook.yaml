@@ -1,0 +1,11 @@
+- name: Setup DB server
+  hosts: database
+  become: yes
+  vars:
+    db_user: admin
+    db_password: admin123
+    db_host: "%"
+    db_name: db_landing_page
+  roles:
+    - roles/database
+

@@ -1,0 +1,31 @@
+- name: install mariadb
+  apt:
+    name: '{{ item }}'
+    state: present
+    update_cache: true
+  loop:
+    - mariadb-server
+    - mariadb-client
+    - python3-mysqldb
+
+- name: setup database
+  community.mysql.mysql_user: # https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_user_module.html#ansible-collections-community-mysql-mysql-user-module
+    name: '{{ db_user }}'
+    password: '{{ db_password }}'
+    priv: '*.*:ALL'
+    state: present
+    host: '{{ db_host }}'
+
+- name: add new database
+  community.mysql.mysql_db: # https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_db_module.html#ansible-collections-community-mysql-mysql-db-module
+    name: '{{ db_name }}'
+    state: present
+
+- name: change bind address to 0.0.0.0 (127.0.0.1)
+  lineinfile:   #https://docs.ansible.com/ansible/latest/collections/ansible/builtin/lineinfile_module.html#examples
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    regexp: '^bind-address'
+    line: 'bind-address = 0.0.0.0'
+    backup: yes
+  notify: 
+    - restart mariadb

@@ -1,0 +1,42 @@
+- name: install requirements
+  apt:
+    name: "{{ item }}"
+    state: "present"
+    update_cache: true    # sama dengan `apt-get update` https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html#parameter-update_cache
+  loop:
+    - git
+    - php-fpm
+    - php-mysql
+
+- name: download web app
+  git:                    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/git_module.html#ansible-collections-ansible-builtin-git-module
+    repo: https://github.com/adhithia21/sample-php.git
+    dest: /var/www/html/sample-php
+    update: yes
+    force: yes
+
+- name: set permission to allow nginx
+  file:
+    path: /var/www/html/sample-php
+    state: directory
+    owner: www-data
+    group: www-data
+    recurse: yes
+
+- name: create nginx config
+  copy:
+    src: files/default
+    dest: /etc/nginx/sites-available/default
+
+- name: create symbolic link nginx config
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+
+- name: update db config
+  template:
+    src: templates/database.php.j2
+    dest: /var/www/html/sample-php/application/config/database.php
+  notify:
+    - restart nginx

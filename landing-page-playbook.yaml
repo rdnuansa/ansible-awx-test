@@ -1,0 +1,11 @@
+- name: setup landing page servers
+  hosts: landingpage
+  become: yes
+  vars:
+    db_user: admin
+    db_password: admin123
+    db_host: "35.219.63.235"  # db server IP 
+    db_name: db_landing_page
+  roles:
+    - roles/nginx
+    - roles/landing-page

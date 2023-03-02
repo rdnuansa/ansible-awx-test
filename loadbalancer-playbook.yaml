@@ -1,0 +1,13 @@
+- name: setup load balancer
+  hosts: loadbalancer
+  become: yes
+  vars:
+    domain: landing-page.example.com
+    server:
+      - name: landingpage-1
+        host: 35.219.12.116
+      - name: landingpage-2
+        host: 35.219.21.124
+  roles:
+    - roles/nginx
+    - roles/load-balancer

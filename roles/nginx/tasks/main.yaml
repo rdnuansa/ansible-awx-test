@@ -1,0 +1,8 @@
+- name: update ubuntu
+  shell: |
+    apt-get update
+
+- name: install requirements
+  apt:
+    name: "nginx"
+    state: "present"
